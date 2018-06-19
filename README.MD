@@ -13,14 +13,17 @@ https://github.com/kstepanov/zhir
 cd zhir-compose
 ```
  
-4. Install Docker and docker compose
+4. Install Docker and docker compose. For test purposes only in Ubuntu 16.04. Do it on your own.
 ```
 sudo ./install_docker.sh
 ```
 
 5. Check the .env file and set the APP_PATH, relative or absolute.
 
-6. Run sudo docker login https://hub.shakuro.com
+6. Run 
+```
+sudo docker login https://hub.shakuro.com
+```
 
 7. Run docker-compose
 ```
