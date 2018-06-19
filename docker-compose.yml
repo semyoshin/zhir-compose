@@ -1,0 +1,66 @@
+version: '3'
+services:
+  db:
+    image: postgres:9.6-alpine
+    restart: always
+    networks:
+       overlay:
+        aliases:
+         - postgres
+    env_file:
+      - ./.env
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+       overlay:
+        aliases:
+         - redis
+  frontend:
+        image: hub.shakuro.com/zhirkiller/front:v2
+        restart: always
+        networks:
+          - overlay
+        working_dir: /opt/app
+        volumes:
+          - ${APP_PATH}:/opt/app
+        env_file:
+          - ./.env
+        entrypoint: /opt/init/node_entrypoint.sh
+  app:
+    image: hub.shakuro.com/zhirkiller/web:v1
+    restart: always
+    networks:
+       - overlay
+    ports:
+      - "3000:3000"
+    working_dir: /opt/app
+    env_file:
+      - ./.env
+    environment:
+      - PGHOST=postgres
+    entrypoint: /opt/init/rails_entrypoint.sh
+    volumes:
+       - ${APP_PATH}:/opt/app
+    depends_on:
+      - db
+      - redis
+      - frontend
+  sidekiq:
+        image: hub.shakuro.com/zhirkiller/web:v1
+        restart: always
+        networks:
+          - overlay
+        working_dir: /opt/app
+        env_file:
+          - ./.env
+        command: bundle exec sidekiq -C config/sidekiq.yml -e ${RAILS_ENV}
+        volumes:
+          - ${APP_PATH}:/opt/app
+        depends_on:
+          - app
+
+networks:
+  overlay:
