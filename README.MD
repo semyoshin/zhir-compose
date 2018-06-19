@@ -1,11 +1,11 @@
 1. Clone Docker Compose files
 ```
-https://github.com/semyoshin/zhir-compose.git
+git clone https://github.com/semyoshin/zhir-compose.git
 ```
 
 2. Clone APP
 ```
-https://github.com/kstepanov/zhir
+git clone https://github.com/kstepanov/zhir
 ```
 
 3. Go to compose folder
